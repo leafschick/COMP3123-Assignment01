@@ -9,13 +9,13 @@ const createNewUserAccount = async (req, res) => {
     const { first_name, last_name, email, password } = req.body;
 
     if (!first_name || !last_name || !email || !password) {
-      return res.status(400).json({ message: "All fields are required" });
+      return res.status(400).json({ message: "You must complete all fields" });
     }
 
     // Check if user already exists
     const userExists = await User.findOne({ email });
     if (userExists) {
-      return res.status(409).json({ message: "User already registered" });
+      return res.status(409).json({ message: "The user already registered" });
     }
 
     // Hash password
@@ -31,7 +31,7 @@ const createNewUserAccount = async (req, res) => {
     });
 
     res.status(201).json({
-      message: "User registered successfully",
+      message: "The user has now been registered successfully",
       user: {
         id: newUser._id,
         first_name: newUser.first_name,
@@ -40,8 +40,8 @@ const createNewUserAccount = async (req, res) => {
       },
     });
   } catch (err) {
-    console.error("Register error:", err.message);
-    res.status(500).json({ message: "Server error while registering user" });
+    console.error("Sorry looks like we are having register error Please try again later:", err.message);
+    res.status(500).json({ message: "Server has had an error while registering user" });
   }
 };
 
@@ -52,18 +52,18 @@ const loginExistingUser = async (req, res) => {
 
     // Simple validation
     if (!email || !password) {
-      return res.status(400).json({ message: "Email and password required" });
+      return res.status(400).json({ message: "You must provid an email and password required" });
     }
 
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(401).json({ message: "Invalid email or password" });
+      return res.status(401).json({ message: "This is an invalid email or password" });
     }
 
     // Compare passwords
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return res.status(401).json({ message: "Invalid email or password" });
+      return res.status(401).json({ message: "Again, this is an invalid email or password" });
     }
 
     // Create token (simple version)
@@ -74,11 +74,11 @@ const loginExistingUser = async (req, res) => {
     );
 
     res.json({
-      message: "Login successful",
+      message: "User has now login successful",
       token,
     });
   } catch (err) {
-    console.error("Login error:", err.message);
+    console.error("There seems to be a ogin error:", err.message);
     res.status(500).json({ message: "Server error while logging in user" });
   }
 };
