@@ -2,6 +2,7 @@
 const express = require("express");
 const dotenv = require("dotenv");
 const path = require("path");
+const cors = require("cors"); 
 const launchMongoConnection = require("./config/db");
 const userRoutes = require("./routes/userRoutes");
 const employeePathway = require("./routes/employeeRoutes");
@@ -9,6 +10,8 @@ const employeePathway = require("./routes/employeeRoutes");
 dotenv.config();
 
 const app = express();
+
+app.use(cors());
 
 // Allow JSON body parsing
 app.use(express.json());
@@ -22,6 +25,10 @@ launchMongoConnection();
 // Simple health-check route
 app.get("/", (req, res) => {
   res.send("Assignment backend is up and listening.");
+});
+
+app.get("/api/ping", (req, res) => {
+  res.json({ message: "pong from assignment backend" });
 });
 
 // User account routes (signup + login)
